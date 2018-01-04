@@ -32,7 +32,7 @@ public class PlayerDAO {
         commitTransaction();
     }
 
-    public Player findCliendByName(String username) {
+    public Player findPlayer(String username) {
         try {
             EntityManager em = beginTransaction();
             try {

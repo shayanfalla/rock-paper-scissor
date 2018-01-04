@@ -1,6 +1,7 @@
 package server.controller;
 
 import common.Game;
+import common.PlayerDTO;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import server.integration.PlayerDAO;
@@ -17,13 +18,22 @@ public class Controller extends UnicastRemoteObject implements Game {
     
     @Override
     public void pickUsername(String username) throws RemoteException {
-        if (playerDAO.findCliendByName(username) == null) {
+        if (playerDAO.findPlayer(username) == null) {
             playerDAO.registerClient(new Player(username));
         } else {
             throw new RemoteException("Username '" + username + "' is in use. Pick a new username.");
         }
     }   
 
+    @Override
+    public PlayerDTO login(String username) throws RemoteException {
+        Player player = playerDAO.findPlayer(username);
+        if (player != null) {
+            return player;
+        } else {
+            throw new RemoteException("Invalid username. Please, try again.");
+        }
+    }
     @Override
     public void leaveGame(String username) throws RemoteException {
         

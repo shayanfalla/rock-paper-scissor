@@ -13,6 +13,7 @@ public class GameInterpreter implements Runnable {
     private PlayerDTO player = null;
     private boolean loggedIn = false;
     private NotificationHandler notif;
+    String username;
     private final ThreadSafeStdOut outMgr = new ThreadSafeStdOut();
 
     public void start(Game gm) {
@@ -38,6 +39,7 @@ public class GameInterpreter implements Runnable {
                 System.out.println();
                 outMgr.println("Enter command: ('help' for list of commands)");
                 CmdLine cmdLine = new CmdLine(readNextLine());
+                //CmdLine cmdLine = new CmdLine(input.nextLine());
 
                 switch (cmdLine.getCmd()) {
                     case HELP:
@@ -51,15 +53,24 @@ public class GameInterpreter implements Runnable {
                         break;
                     case CONNECT:
                         outMgr.println("Choose a username: ");
-                        String username = readNextLine();
+                        username = readNextLine();
                         game.pickUsername(username);
                         //game.pickUsername(cmdLine.getArgument(0));
                         break;
+                    case LOGIN:
+                        outMgr.println("Give username: ");
+                        username = readNextLine();
+                        this.player = game.login(username);
+                        break;
                     case LOGOUT:
+                        this.player = null;
+                        outMgr.println("You have logged out the game. Log in, to play again!");
                         break;
                     case PLAY:
                         break;
                     case QUIT:
+                        outMgr.println("Exitting the game...");
+                        loggedIn = false;
                         break;
                 }
             } catch (Exception e) {

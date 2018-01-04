@@ -9,6 +9,8 @@ public interface Game extends Remote {
     
     void pickUsername(String username) throws RemoteException;
     
+    PlayerDTO login(String username) throws RemoteException;
+    
     void leaveGame(String username) throws RemoteException;
     
     void compareGuess(String guess) throws RemoteException;

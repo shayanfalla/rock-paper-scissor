@@ -38,18 +38,14 @@ import java.util.List;
         return arguments.get(index);
     }
 
-    Command getCmd() {
+    public Command getCmd() {
         return command;
-    }
-}*
+    }*/
+
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * One line of user input, which should be a command and parameters associated
- * with that command (if any).
- */
 class CmdLine {
 
     private static final String PARAM_DELIMETER = " ";
@@ -59,41 +55,23 @@ class CmdLine {
     private ArrayList<String> arguments = new ArrayList<>();
     private Command command;
 
-    /**
-     * Creates a new instance representing the specified line.
-     *
-     * @param enteredLine A line that was entered by the user.
-     */
+
     CmdLine(String enteredLine) {
         this.enteredLine = enteredLine;
         parseCmd(enteredLine);
         extractParams(enteredLine);
     }
 
-    /**
-     * @return The command represented by this object.
-     */
+ 
     Command getCmd() {
         return cmd;
     }
 
-    /**
-     * @return The entire user input, without any modification.
-     */
+  
     String getUserInput() {
         return enteredLine;
     }
 
-    /**
-     * Returns the parameter with the specified index. The first parameter has
-     * index zero. Parameters are separated by a blank character (" "). A
-     * Character sequence enclosed in quotes form one single parameter, even if
-     * it contains blanks.
-     *
-     * @param index The index of the searched parameter.
-     * @return The parameter with the specified index, or <code>null</code> if
-     * there is no parameter with that index.
-     */
     String getParameter(int index) {
         if (params == null) {
             return null;
