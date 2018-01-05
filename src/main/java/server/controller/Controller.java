@@ -1,7 +1,6 @@
 package server.controller;
 
-import common.Game;
-import common.PlayerDTO;
+import common.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import server.integration.PlayerDAO;
@@ -36,12 +35,19 @@ public class Controller extends UnicastRemoteObject implements Game {
     }
     @Override
     public void leaveGame(String username) throws RemoteException {
-        
+        Player player = playerDAO.findPlayer(username);
+        if(player != null){
+            playerDAO.deleteClient(player);
+        } else {
+            throw new RemoteException("User is not in database.");
+        }
     }
 
     @Override
     public void compareGuess(String guess) throws RemoteException {
         
     }
+    
+    
     
 }

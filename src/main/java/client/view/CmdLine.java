@@ -3,49 +3,6 @@ package client.view;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * One line of user input, which should be a command and parameters associated
- * with that command (if any).
- */
-/*class CmdLine {
-
-    private ArrayList<String> arguments = new ArrayList<>();
-    private Command command;
-
-    public CmdLine(String enteredLine) {
-        chooseCommand(enteredLine);
-    }
-
-    private void chooseCommand(String enteredLine) {
-        String[] result = enteredLine.split("\\s");
-        
-        if(result.length == 0) {
-            this.command = command.NO_COMMAND;
-            return;
-        }
-        
-        String cmd = result[0].toUpperCase();       
-        switch(cmd) {
-            case "CONNECT":
-                if (result.length != 1) throw new IllegalArgumentException("Username can be only one word!");
-                this.command = Command.CONNECT;
-                arguments.add(cmd);
-                break;
-        }
-    }
-
-    public String getArgument(int index) {
-        return arguments.get(index);
-    }
-
-    public Command getCmd() {
-        return command;
-    }*/
-
-
-import java.util.ArrayList;
-import java.util.List;
-
 class CmdLine {
 
     private static final String PARAM_DELIMETER = " ";

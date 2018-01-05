@@ -67,9 +67,11 @@ public class GameInterpreter implements Runnable {
                         outMgr.println("You have logged out the game. Log in, to play again!");
                         break;
                     case PLAY:
+                        
                         break;
                     case QUIT:
                         outMgr.println("Exitting the game...");
+                        game.leaveGame(username);
                         loggedIn = false;
                         break;
                 }
