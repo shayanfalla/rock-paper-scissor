@@ -15,6 +15,7 @@ public class Controller extends UnicastRemoteObject implements Game {
     private final PlayerDAO playerDAO;
     private List<Player> Players;
     private int nrofplayers;
+    private sessionGame gamesession;
 
     public Controller() throws RemoteException {
         super();
@@ -23,7 +24,8 @@ public class Controller extends UnicastRemoteObject implements Game {
     }
 
     public void initGame() {
-        new sessionGame(this).Gamesession();
+        gamesession = new sessionGame(this);
+        gamesession.Gamesession();
     }
 
     public int getNrofplayers() {
@@ -72,9 +74,13 @@ public class Controller extends UnicastRemoteObject implements Game {
             throw new RemoteException(username + " does not exist.");
         }
     }
-
     @Override
-    public void playGame(PlayerDTO player, String move, MessageToPlayers msg) throws RemoteException {
+    public void sendMove(String msg, String username) throws RemoteException {
+        gamesession.playerMove(msg, username);
+    }
+    
+    @Override
+    public void playGame() throws RemoteException {
         getPlayers();
         nrofplayers++;
     }

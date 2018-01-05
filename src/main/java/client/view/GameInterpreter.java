@@ -73,29 +73,35 @@ public class GameInterpreter implements Runnable {
                             playing = true;
                             outMgr.println("Enter a move or choose 'stop' to finish the game!");
                             while (playing) {
+                                game.playGame();
                                 move = readNextLine().toUpperCase();
                                 switch (move) {
                                     case "SCISSOR":
-                                        game.playGame(this.player, move, this.notif);
+                                        //game.playGame(this.player, move, this.notif);
+                                        game.sendMove("SCISSOR", username);
                                         break;
                                     case "ROCK":
-                                        game.playGame(this.player, move, this.notif);
+                                        //game.playGame(this.player, move, this.notif);
+                                        game.sendMove("ROCK", username);
                                         break;
                                     case "PAPER":
-                                        game.playGame(this.player, move, this.notif);
+                                        //game.playGame(this.player, move, this.notif);
+                                        game.sendMove("PAPER", username);
                                         break;
                                     case "STOP":
                                         game.leaveGame();
                                         playing = false;
                                         break;
                                     default:
-                                        throw new IllegalArgumentException("Invalid move!");
+                                        System.out.println("invalid command! Try again!");
+                                        break;
                                 }
                             }
                         } else {
                             System.out.println("You must be logged in!");
+                            break;
                         }
-                        if(!playing){
+                        if (!playing) {
                             game.deletePlayer(username);
                             loggedIn = false;
                         }
