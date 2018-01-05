@@ -1,6 +1,7 @@
 package server.controller;
 
 import common.Game;
+import common.MessageToPlayers;
 import common.PlayerDTO;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -34,13 +35,19 @@ public class Controller extends UnicastRemoteObject implements Game {
             throw new RemoteException("Invalid username. Please, try again.");
         }
     }
+    
     @Override
-    public void leaveGame(String username) throws RemoteException {
-        
+    public void deletePlayer(String username) throws RemoteException {
+        Player player = playerDAO.findPlayer(username);
+        if (player != null) {
+            playerDAO.deletePlayer(player);
+        } else {
+            throw new RemoteException("Invalid credentials. Please, try again.");
+        }
     }
-
+    
     @Override
-    public void compareGuess(String guess) throws RemoteException {
+    public void playGame(PlayerDTO player, String move, MessageToPlayers msg) throws RemoteException {
         
     }
     

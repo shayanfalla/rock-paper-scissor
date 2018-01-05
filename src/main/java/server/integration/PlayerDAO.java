@@ -26,7 +26,7 @@ public class PlayerDAO {
         }
     }
 
-    public void deleteClient(Player player) {
+    public void deletePlayer(Player player) {
         EntityManager entityManager = beginTransaction();
         entityManager.remove(entityManager.merge(player));
         commitTransaction();

@@ -14,6 +14,7 @@ public class GameInterpreter implements Runnable {
     private boolean loggedIn = false;
     private NotificationHandler notif;
     String username;
+    String move;
     private final ThreadSafeStdOut outMgr = new ThreadSafeStdOut();
 
     public void start(Game gm) {
@@ -67,11 +68,17 @@ public class GameInterpreter implements Runnable {
                         outMgr.println("You have logged out the game. Log in, to play again!");
                         break;
                     case PLAY:
+                        if(this.player != null) {
+                            outMgr.println("Make a move!");
+                            move = readNextLine();
+                            game.playGame(this.player, move, this.notif);
+                        }
                         break;
                     case QUIT:
                         outMgr.println("Exitting the game...");
                         loggedIn = false;
-                        break;
+                        game.deletePlayer(username);
+                        System.exit(0);
                 }
             } catch (Exception e) {
                 outMgr.println("Operation failed");

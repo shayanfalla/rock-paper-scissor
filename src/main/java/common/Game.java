@@ -11,7 +11,8 @@ public interface Game extends Remote {
     
     PlayerDTO login(String username) throws RemoteException;
     
-    void leaveGame(String username) throws RemoteException;
+    void deletePlayer(String username) throws RemoteException;
     
-    void compareGuess(String guess) throws RemoteException;
+    void playGame(PlayerDTO player, String move, MessageToPlayers msg) throws RemoteException;
+    
 }
