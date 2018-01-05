@@ -13,7 +13,6 @@ public class Server {
         try {
             Server server = new Server();
             server.startRMIServant();
-            System.out.println("Game has started.");
         } catch (RemoteException | MalformedURLException e) {
             System.out.println("Failed to start game server!");
             e.printStackTrace();
@@ -28,6 +27,8 @@ public class Server {
         }
         Controller controller = new Controller();
         Naming.rebind("gameproj", controller);
+        System.out.println("Game has started.");
+        controller.initGame();
     }
-    
+
 }

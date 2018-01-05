@@ -1,5 +1,6 @@
 package server.model;
 
+import common.MessageToPlayers;
 import common.PlayerDTO;
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -21,12 +22,24 @@ public class Player implements PlayerDTO, Serializable {
     
     @Column(nullable = false)
     private int score;
+    
+    @Column(nullable = false)
+    private MessageToPlayers playerObj;
         
     public Player() {
     }
     
-    public Player(String username) {
+    public Player(String username, MessageToPlayers playerObj) {
         this.username = username;
+        this.playerObj = playerObj;
+    }
+    
+    public void setPlayerObj(MessageToPlayers playerObj){
+        this.playerObj = playerObj;
+    }
+    
+    public MessageToPlayers getPlayerObj(){
+        return this.playerObj;
     }
     
     public int getId() {

@@ -14,6 +14,7 @@ public class GameInterpreter implements Runnable {
     private boolean loggedIn = false;
     private NotificationHandler notif;
     String username;
+    String move;
     private final ThreadSafeStdOut outMgr = new ThreadSafeStdOut();
 
     public void start(Game gm) {
@@ -34,6 +35,7 @@ public class GameInterpreter implements Runnable {
     @Override
     public void run() {
         outMgr.println("~~Welcome to the Game~~");
+        boolean playing = false;
         while (loggedIn) {
             try {
                 System.out.println();
@@ -54,7 +56,7 @@ public class GameInterpreter implements Runnable {
                     case CONNECT:
                         outMgr.println("Choose a username: ");
                         username = readNextLine();
-                        game.pickUsername(username);
+                        game.pickUsername(username, new NotificationHandler());
                         //game.pickUsername(cmdLine.getArgument(0));
                         break;
                     case LOGIN:
@@ -67,13 +69,42 @@ public class GameInterpreter implements Runnable {
                         outMgr.println("You have logged out the game. Log in, to play again!");
                         break;
                     case PLAY:
-                        
+                        if (this.player != null) {
+                            playing = true;
+                            outMgr.println("Enter a move or choose 'stop' to finish the game!");
+                            while (playing) {
+                                move = readNextLine().toUpperCase();
+                                switch (move) {
+                                    case "SCISSOR":
+                                        game.playGame(this.player, move, this.notif);
+                                        break;
+                                    case "ROCK":
+                                        game.playGame(this.player, move, this.notif);
+                                        break;
+                                    case "PAPER":
+                                        game.playGame(this.player, move, this.notif);
+                                        break;
+                                    case "STOP":
+                                        game.leaveGame();
+                                        playing = false;
+                                        break;
+                                    default:
+                                        throw new IllegalArgumentException("Invalid move!");
+                                }
+                            }
+                        } else {
+                            System.out.println("You must be logged in!");
+                        }
+                        if(!playing){
+                            game.deletePlayer(username);
+                            loggedIn = false;
+                        }
                         break;
                     case QUIT:
                         outMgr.println("Exitting the game...");
-                        game.leaveGame(username);
+                        game.deletePlayer(username);
                         loggedIn = false;
-                        break;
+                        System.exit(0);
                 }
             } catch (Exception e) {
                 outMgr.println("Operation failed");

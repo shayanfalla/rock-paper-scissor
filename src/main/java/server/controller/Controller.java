@@ -3,26 +3,54 @@ package server.controller;
 import common.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import server.integration.PlayerDAO;
 import server.model.Player;
+import server.model.sessionGame;
 
 public class Controller extends UnicastRemoteObject implements Game {
 
     private final PlayerDAO playerDAO;
-    
+    private List<Player> Players;
+    private int nrofplayers;
+
     public Controller() throws RemoteException {
         super();
         this.playerDAO = new PlayerDAO();
+        this.nrofplayers = 0;
     }
-    
+
+    public void initGame() {
+        new sessionGame(this).Gamesession();
+    }
+
+    public int getNrofplayers() {
+        return nrofplayers;
+    }
+
+    public void broadmsg(String msg) {
+        for (Player s : Players) {
+            try {
+                s.getPlayerObj().recvMsg(msg);
+            } catch (RemoteException ex) {
+            }
+        }
+    }
+
+    public List<Player> getPlayers() {
+        return Players = playerDAO.listPlayers();
+    }
+
     @Override
-    public void pickUsername(String username) throws RemoteException {
+    public void pickUsername(String username, MessageToPlayers client) throws RemoteException {
         if (playerDAO.findPlayer(username) == null) {
-            playerDAO.registerClient(new Player(username));
+            playerDAO.registerClient(new Player(username, client));
         } else {
             throw new RemoteException("Username '" + username + "' is in use. Pick a new username.");
         }
-    }   
+    }
 
     @Override
     public PlayerDTO login(String username) throws RemoteException {
@@ -33,21 +61,29 @@ public class Controller extends UnicastRemoteObject implements Game {
             throw new RemoteException("Invalid username. Please, try again.");
         }
     }
+
     @Override
-    public void leaveGame(String username) throws RemoteException {
+    public void deletePlayer(String username) throws RemoteException {
         Player player = playerDAO.findPlayer(username);
-        if(player != null){
-            playerDAO.deleteClient(player);
+        if (player != null) {
+            playerDAO.deletePlayer(player);
+            getPlayers();
         } else {
-            throw new RemoteException("User is not in database.");
+            throw new RemoteException(username + " does not exist.");
         }
     }
 
     @Override
-    public void compareGuess(String guess) throws RemoteException {
-        
+    public void playGame(PlayerDTO player, String move, MessageToPlayers msg) throws RemoteException {
+        getPlayers();
+        nrofplayers++;
     }
-    
-    
-    
+
+    @Override
+    public void leaveGame() throws RemoteException {
+        nrofplayers--;
+        if (nrofplayers < 0) {
+            nrofplayers = 0;
+        }
+    }
 }

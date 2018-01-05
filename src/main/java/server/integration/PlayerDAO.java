@@ -1,5 +1,7 @@
 package server.integration;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -26,7 +28,7 @@ public class PlayerDAO {
         }
     }
 
-    public void deleteClient(Player player) {
+    public void deletePlayer(Player player) {
         EntityManager entityManager = beginTransaction();
         entityManager.remove(entityManager.merge(player));
         commitTransaction();
@@ -47,7 +49,23 @@ public class PlayerDAO {
         }
 
     }
-    
+
+    public List<Player> listPlayers() {
+
+        EntityManager em = beginTransaction();
+        Query query = em.createQuery("SELECT p FROM Player p");
+        List<Player> players;
+
+        try {
+            players = query.getResultList();
+        } catch (NoResultException e) {
+            players = new ArrayList<>();
+        }
+
+        commitTransaction();
+        return players;
+    }
+
     private EntityManager beginTransaction() {
         EntityManager em = emFactory.createEntityManager();
         threadLocalEntityManager.set(em);
