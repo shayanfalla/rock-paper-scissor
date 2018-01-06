@@ -69,11 +69,11 @@ public class Player implements PlayerDTO, Serializable {
         this.username = username;
     }
 
-   /* public int getScore() {
+    public int getScore() {
         return score;
     }
     
     public void setScore(int score) {
-        this.score = score;
-    }*/
+        this.score += score;
+    }
 }

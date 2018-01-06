@@ -23,7 +23,7 @@ public class Controller extends UnicastRemoteObject implements Game {
         this.nrofplayers = 0;
     }
 
-    public void initGame() {
+    public void initGame() throws InterruptedException {
         gamesession = new sessionGame(this);
         gamesession.Gamesession();
     }

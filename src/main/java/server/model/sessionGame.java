@@ -1,10 +1,8 @@
 package server.model;
 
+import static java.lang.Thread.sleep;
 import java.rmi.RemoteException;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import server.controller.Controller;
 
 public class sessionGame {
@@ -63,15 +61,17 @@ public class sessionGame {
         }
     }
 
-    public void Gamesession() {
+    public void Gamesession() throws InterruptedException {
         int gamecounter = 1;
         wt.start();
         while (true) {
             /*if(controller.getNrofplayers() > 0){
             controller.broadmsg("Waiting for " + (3 - controller.getNrofplayers()) + " players");
             }*/
+            sleep(200);
 
             while (controller.getNrofplayers() >= 3) {
+                
                 if (count == 0) {
                     //(re)initialize players
                     wt.terminate();
@@ -83,14 +83,12 @@ public class sessionGame {
                     controller.broadmsg("Round " + gamecounter);
                     controller.broadmsg("Players! Enter your guesses");
                     while (answers < 3) {
-
+                        sleep(200);
                     }
+                    gamecounter++;
                     answers = 0;
-                    count = 2;
-                }
-                if (count == 2) {
-                    count = 1;
-                    //We send results
+                    new GameLogic().game(listPlayers);
+                    count = 0;
                 }
             }
         }
