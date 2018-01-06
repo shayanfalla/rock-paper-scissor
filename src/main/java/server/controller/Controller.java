@@ -92,4 +92,9 @@ public class Controller extends UnicastRemoteObject implements Game {
             nrofplayers = 0;
         }
     }
+    
+    @Override
+    public boolean gameInSession() throws RemoteException {
+        return gamesession.gameInSession();
+    }
 }

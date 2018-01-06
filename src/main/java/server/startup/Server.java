@@ -5,6 +5,8 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import server.controller.Controller;
 
 public class Server {
@@ -28,7 +30,11 @@ public class Server {
         Controller controller = new Controller();
         Naming.rebind("gameproj", controller);
         System.out.println("Game has started.");
-        controller.initGame();
+        try {
+            controller.initGame();
+        } catch (InterruptedException ex) {
+            System.out.println("Initialization failed.");
+        }
     }
 
 }

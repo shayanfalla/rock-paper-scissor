@@ -20,7 +20,7 @@ public class WaitThread extends Thread {
     public void run() {
         while (running) {
             if (controller.getNrofplayers() > 0) {
-                controller.broadmsg("Waiting for " + (3 - controller.getNrofplayers()) + " players");
+                controller.broadmsg("Waiting for " + (2 - controller.getNrofplayers()) + " players");
             }
             try {
                 sleep(3000);

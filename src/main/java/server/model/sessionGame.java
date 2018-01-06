@@ -9,20 +9,20 @@ public class sessionGame {
 
     Controller controller;
     WaitThread wt;
-    private int count;
+    private boolean count;
     private int answers;
     List<Player> listPlayers;
 
     public sessionGame(Controller controller) {
         this.controller = controller;
         this.wt = new WaitThread(controller);
-        this.count = 0;
+        this.count = false;
         this.answers = 0;
         this.listPlayers = controller.getPlayers();
     }
 
     public Player getPlayer(String username) {
-        if (count == 1) {
+        if (count) {
             for (Player player : listPlayers) {
                 if (player.getUsername().equals(username)) {
                     System.out.println("found player! Player is: " + player.getUsername());
@@ -34,7 +34,7 @@ public class sessionGame {
     }
 
     public Player setPlayer(String username, String move) {
-        if (count == 1) {
+        if (count) {
             for (int i = 0; i < listPlayers.size(); i++) {
                 if (listPlayers.get(i).getUsername().equals(username)) {
                     System.out.println("Setting move! Move is: " + move);
@@ -49,7 +49,7 @@ public class sessionGame {
 
     public void playerMove(String msg, String username) throws RemoteException {
         Player player = getPlayer(username);
-        if (count == 1) {
+        if (count) {
             if (player.getMove().equals("")) {
                 System.out.println("Setting move! Inside playerMove, move is " + msg);
                 setPlayer(username, msg);
@@ -61,6 +61,10 @@ public class sessionGame {
         }
     }
 
+    public boolean gameInSession() {
+        return count;
+    }
+    
     public void Gamesession() throws InterruptedException {
         int gamecounter = 1;
         wt.start();
@@ -70,25 +74,24 @@ public class sessionGame {
             }*/
             sleep(200);
 
-            while (controller.getNrofplayers() >= 3) {
+            while (controller.getNrofplayers() >= 2) {
                 
-                if (count == 0) {
-                    //(re)initialize players
+                if (!count) {
                     wt.terminate();
                     listPlayers = controller.getPlayers();
-                    count = 1;
+                    count = true;
                 }
-                if (count == 1) {
+                if (count) {
                     //all players give their moves
                     controller.broadmsg("Round " + gamecounter);
                     controller.broadmsg("Players! Enter your guesses");
-                    while (answers < 3) {
+                    while (answers < controller.getNrofplayers()) {
                         sleep(200);
                     }
                     gamecounter++;
                     answers = 0;
                     new GameLogic().game(listPlayers);
-                    count = 0;
+                    count = false;
                 }
             }
         }

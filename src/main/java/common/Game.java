@@ -18,4 +18,6 @@ public interface Game extends Remote {
     void playGame() throws RemoteException;
     
     void leaveGame() throws RemoteException;
+    
+    boolean gameInSession() throws RemoteException;
 }

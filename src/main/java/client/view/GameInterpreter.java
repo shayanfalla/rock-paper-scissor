@@ -41,7 +41,6 @@ public class GameInterpreter implements Runnable {
                 System.out.println();
                 outMgr.println("Enter command: ('help' for list of commands)");
                 CmdLine cmdLine = new CmdLine(readNextLine());
-                //CmdLine cmdLine = new CmdLine(input.nextLine());
 
                 switch (cmdLine.getCmd()) {
                     case HELP:
@@ -59,21 +58,25 @@ public class GameInterpreter implements Runnable {
                         game.pickUsername(username, new NotificationHandler());
 
                         playing = true;
+                        if (game.gameInSession()) {
+                            System.out.println("Game has already started. You will enter in the next round!");
+                            while (game.gameInSession()) {
+
+                            }
+                        }
                         outMgr.println("Enter a move or choose 'stop' to finish the game!");
                         game.playGame();
+
                         while (playing) {
                             move = readNextLine().toUpperCase();
                             switch (move) {
                                 case "SCISSOR":
-                                    //game.playGame(this.player, move, this.notif);
                                     game.sendMove("SCISSOR", username);
                                     break;
                                 case "ROCK":
-                                    //game.playGame(this.player, move, this.notif);
                                     game.sendMove("ROCK", username);
                                     break;
                                 case "PAPER":
-                                    //game.playGame(this.player, move, this.notif);
                                     game.sendMove("PAPER", username);
                                     break;
                                 case "STOP":

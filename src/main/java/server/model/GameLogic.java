@@ -15,9 +15,9 @@ public class GameLogic {
                         p1.setScore(move2.equals("ROCK") ? 1 : 0);
                     }
                     if(move1.equals("ROCK")) {
-                        p1.setScore(move2.equals("SCISSORS") ? 1 : 0);
+                        p1.setScore(move2.equals("SCISSOR") ? 1 : 0);
                     }
-                    if(move1.equals("SCISSORS")) {
+                    if(move1.equals("SCISSOR")) {
                         p1.setScore(move2.equals("PAPER") ? 1 : 0);
                     }
                 }
