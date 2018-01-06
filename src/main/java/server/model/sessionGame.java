@@ -65,7 +65,7 @@ public class sessionGame {
         return count;
     }
     
-    public void Gamesession() throws InterruptedException {
+    public void Gamesession() throws InterruptedException, RemoteException {
         int gamecounter = 1;
         wt.start();
         while (true) {

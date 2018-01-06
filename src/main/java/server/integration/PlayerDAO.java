@@ -66,6 +66,12 @@ public class PlayerDAO {
         return players;
     }
 
+    public void updateInfo(Player player) {
+        EntityManager entityManager = beginTransaction();
+        entityManager.merge(player);
+        commitTransaction();
+    }
+
     private EntityManager beginTransaction() {
         EntityManager em = emFactory.createEntityManager();
         threadLocalEntityManager.set(em);

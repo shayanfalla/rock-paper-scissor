@@ -23,7 +23,7 @@ public class Controller extends UnicastRemoteObject implements Game {
         this.nrofplayers = 0;
     }
 
-    public void initGame() throws InterruptedException {
+    public void initGame() throws InterruptedException, RemoteException {
         gamesession = new sessionGame(this);
         gamesession.Gamesession();
     }
@@ -43,6 +43,14 @@ public class Controller extends UnicastRemoteObject implements Game {
 
     public List<Player> getPlayers() {
         return Players = playerDAO.listPlayers();
+    }
+
+    public void updateInfo(List<Player> players) {
+        for (Player p : players) {
+            p.setMove("");
+            playerDAO.updateInfo(p);
+            broadmsg("Your total score is: " + p.getScore());
+        }
     }
 
     @Override
@@ -74,11 +82,12 @@ public class Controller extends UnicastRemoteObject implements Game {
             throw new RemoteException(username + " does not exist.");
         }
     }
+
     @Override
     public void sendMove(String msg, String username) throws RemoteException {
         gamesession.playerMove(msg, username);
     }
-    
+
     @Override
     public void playGame() throws RemoteException {
         getPlayers();
@@ -92,7 +101,7 @@ public class Controller extends UnicastRemoteObject implements Game {
             nrofplayers = 0;
         }
     }
-    
+
     @Override
     public boolean gameInSession() throws RemoteException {
         return gamesession.gameInSession();
