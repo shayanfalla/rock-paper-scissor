@@ -45,11 +45,11 @@ public class Controller extends UnicastRemoteObject implements Game {
         return Players = playerDAO.listPlayers();
     }
 
-    public void updateInfo(List<Player> players) {
+    public void updateInfo(List<Player> players) throws RemoteException {
         for (Player p : players) {
             p.setMove("");
             playerDAO.updateInfo(p);
-            broadmsg("Your total score is: " + p.getScore());
+            p.getPlayerObj().recvMsg("Your total score is: " + p.getScore());
         }
     }
 

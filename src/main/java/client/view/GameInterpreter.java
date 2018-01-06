@@ -30,7 +30,7 @@ public class GameInterpreter implements Runnable {
     public void run() {
         outMgr.println("~~Welcome to the Game~~");
         boolean playing = false;
-        while (true) {  
+        while (true) {
             try {
                 outMgr.println("");
                 outMgr.println("Enter command: ('help' for list of commands)");
@@ -101,7 +101,6 @@ public class GameInterpreter implements Runnable {
     }
 
     private String readNextLine() {
-        outMgr.print(PROMPT);
         return input.nextLine();
     }
 
