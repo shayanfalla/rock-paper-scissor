@@ -25,6 +25,9 @@ public class Player implements PlayerDTO, Serializable {
     
     @Column(nullable = false)
     private MessageToPlayers playerObj;
+    
+    @Column(nullable = false)
+    private String move;
         
     public Player() {
     }
@@ -32,8 +35,16 @@ public class Player implements PlayerDTO, Serializable {
     public Player(String username, MessageToPlayers playerObj) {
         this.username = username;
         this.playerObj = playerObj;
+        this.move = "";
     }
     
+    public void setMove(String move){
+        this.move = move;
+    }
+    
+    public String getMove(){
+        return this.move;
+    }
     public void setPlayerObj(MessageToPlayers playerObj){
         this.playerObj = playerObj;
     }

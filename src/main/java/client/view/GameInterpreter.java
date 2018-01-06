@@ -58,38 +58,41 @@ public class GameInterpreter implements Runnable {
                         username = readNextLine();
                         game.pickUsername(username, new NotificationHandler());
 
-                            playing = true;
-                            outMgr.println("Enter a move or choose 'stop' to finish the game!");
-                            while (playing) {
-                                game.playGame();
-                                move = readNextLine().toUpperCase();
-                                switch (move) {
-                                    case "SCISSOR":
-                                        //game.playGame(this.player, move, this.notif);
-                                        game.sendMove("SCISSOR", username);
-                                        break;
-                                    case "ROCK":
-                                        //game.playGame(this.player, move, this.notif);
-                                        game.sendMove("ROCK", username);
-                                        break;
-                                    case "PAPER":
-                                        //game.playGame(this.player, move, this.notif);
-                                        game.sendMove("PAPER", username);
-                                        break;
-                                    case "STOP":
-                                        game.leaveGame();
-                                        game.deletePlayer(username);
-                                        System.exit(0);
-                                    default:
-                                        System.out.println("Invalid command! Try again!");
-                                        break;
-                                }
+                        playing = true;
+                        outMgr.println("Enter a move or choose 'stop' to finish the game!");
+                        game.playGame();
+                        while (playing) {
+                            move = readNextLine().toUpperCase();
+                            switch (move) {
+                                case "SCISSOR":
+                                    //game.playGame(this.player, move, this.notif);
+                                    game.sendMove("SCISSOR", username);
+                                    break;
+                                case "ROCK":
+                                    //game.playGame(this.player, move, this.notif);
+                                    game.sendMove("ROCK", username);
+                                    break;
+                                case "PAPER":
+                                    //game.playGame(this.player, move, this.notif);
+                                    game.sendMove("PAPER", username);
+                                    break;
+                                case "STOP":
+                                    game.leaveGame();
+                                    game.deletePlayer(username);
+                                    System.exit(0);
+                                default:
+                                    System.out.println("Invalid command! Try again!");
+                                    break;
                             }
+                        }
                     case QUIT:
                         outMgr.println("Exitting the game...");
                         game.deletePlayer(username);
                         loggedIn = false;
                         System.exit(0);
+                    default:
+                        System.out.println("Invalid command! Try again!");
+                        break;
                 }
             } catch (Exception e) {
                 outMgr.println("Operation failed");

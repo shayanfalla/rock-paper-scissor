@@ -12,62 +12,80 @@ public class sessionGame {
     Controller controller;
     WaitThread wt;
     private int count;
-    HashMap players;
+    private int answers;
+    List<Player> listPlayers;
 
     public sessionGame(Controller controller) {
         this.controller = controller;
         this.wt = new WaitThread(controller);
         this.count = 0;
+        this.answers = 0;
+        this.listPlayers = controller.getPlayers();
+    }
+
+    public Player getPlayer(String username) {
+        if (count == 1) {
+            for (Player player : listPlayers) {
+                if (player.getUsername().equals(username)) {
+                    System.out.println("found player! Player is: " + player.getUsername());
+                    return player;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Player setPlayer(String username, String move) {
+        if (count == 1) {
+            for (int i = 0; i < listPlayers.size(); i++) {
+                if (listPlayers.get(i).getUsername().equals(username)) {
+                    System.out.println("Setting move! Move is: " + move);
+                    listPlayers.get(i).setMove(move);
+                    System.out.println(listPlayers.get(i).getMove());
+                    answers++;
+                }
+            }
+        }
+        return null;
     }
 
     public void playerMove(String msg, String username) throws RemoteException {
-        if (count == 1 && players.get(username).equals("")) {
-            players.put(username, msg);
-            controller.broadmsg(username + " has answered!");
-        }
-    }
-
-    private int answers() {
-        int answers = 0;
-        Iterator it = players.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            if (!pair.getValue().equals("")) {
-                answers++;
+        Player player = getPlayer(username);
+        if (count == 1) {
+            if (player.getMove().equals("")) {
+                System.out.println("Setting move! Inside playerMove, move is " + msg);
+                setPlayer(username, msg);
+            } else {
+                player.getPlayerObj().recvMsg("You have already answered!");
             }
-            it.remove();
+        } else {
+            player.getPlayerObj().recvMsg("Round has not started yet!");
         }
-        return answers;
     }
 
     public void Gamesession() {
-        int gamecounter = 0;
-        List<Player> listPlayers;
+        int gamecounter = 1;
         wt.start();
         while (true) {
             /*if(controller.getNrofplayers() > 0){
             controller.broadmsg("Waiting for " + (3 - controller.getNrofplayers()) + " players");
             }*/
 
-            while (controller.getNrofplayers() >= 1) {
+            while (controller.getNrofplayers() >= 3) {
                 if (count == 0) {
                     //(re)initialize players
                     wt.terminate();
-                    players = new HashMap();
                     listPlayers = controller.getPlayers();
-                    for (Player s : listPlayers) {
-                        players.put(s.getUsername(), "");
-                        System.out.println(s.getUsername());
-                    }
                     count = 1;
                 }
                 if (count == 1) {
                     //all players give their moves
                     controller.broadmsg("Round " + gamecounter);
                     controller.broadmsg("Players! Enter your guesses");
-                    while (answers() < 3) {
-                       
+                    while (answers < 3) {
+
                     }
+                    answers = 0;
                     count = 2;
                 }
                 if (count == 2) {
