@@ -33,12 +33,12 @@ public class Controller extends UnicastRemoteObject implements Game {
     }
 
     public void broadmsg(String msg) {
-        for (Player s : Players) {
+        Players.forEach((p) -> {
             try {
-                s.getPlayerObj().recvMsg(msg);
+                p.getPlayerObj().recvMsg(msg);
             } catch (RemoteException ex) {
             }
-        }
+        });
     }
 
     public List<Player> getPlayers() {

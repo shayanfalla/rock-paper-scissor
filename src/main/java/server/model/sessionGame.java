@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package server.model;
 
 import java.rmi.RemoteException;
@@ -37,9 +32,8 @@ public class sessionGame {
         Iterator it = players.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
-            if (pair.getValue().equals("")) {
+            if (!pair.getValue().equals("")) {
                 answers++;
-
             }
             it.remove();
         }
@@ -55,7 +49,7 @@ public class sessionGame {
             controller.broadmsg("Waiting for " + (3 - controller.getNrofplayers()) + " players");
             }*/
 
-            while (controller.getNrofplayers() >= 3) {
+            while (controller.getNrofplayers() >= 1) {
                 if (count == 0) {
                     //(re)initialize players
                     wt.terminate();

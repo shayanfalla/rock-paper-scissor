@@ -13,8 +13,8 @@ public class GameInterpreter implements Runnable {
     private PlayerDTO player = null;
     private boolean loggedIn = false;
     private NotificationHandler notif;
-    String username;
-    String move;
+    private String username;
+    private String move;
     private final ThreadSafeStdOut outMgr = new ThreadSafeStdOut();
 
     public void start(Game gm) {
@@ -36,7 +36,7 @@ public class GameInterpreter implements Runnable {
     public void run() {
         outMgr.println("~~Welcome to the Game~~");
         boolean playing = false;
-        while (loggedIn) {
+        while (true) {
             try {
                 System.out.println();
                 outMgr.println("Enter command: ('help' for list of commands)");
@@ -53,23 +53,11 @@ public class GameInterpreter implements Runnable {
                             System.out.println(command.toString().toLowerCase());
                         }
                         break;
-                    case CONNECT:
+                    case PLAY:
                         outMgr.println("Choose a username: ");
                         username = readNextLine();
                         game.pickUsername(username, new NotificationHandler());
-                        //game.pickUsername(cmdLine.getArgument(0));
-                        break;
-                    case LOGIN:
-                        outMgr.println("Give username: ");
-                        username = readNextLine();
-                        this.player = game.login(username);
-                        break;
-                    case LOGOUT:
-                        this.player = null;
-                        outMgr.println("You have logged out the game. Log in, to play again!");
-                        break;
-                    case PLAY:
-                        if (this.player != null) {
+
                             playing = true;
                             outMgr.println("Enter a move or choose 'stop' to finish the game!");
                             while (playing) {
@@ -90,22 +78,13 @@ public class GameInterpreter implements Runnable {
                                         break;
                                     case "STOP":
                                         game.leaveGame();
-                                        playing = false;
-                                        break;
+                                        game.deletePlayer(username);
+                                        System.exit(0);
                                     default:
-                                        System.out.println("invalid command! Try again!");
+                                        System.out.println("Invalid command! Try again!");
                                         break;
                                 }
                             }
-                        } else {
-                            System.out.println("You must be logged in!");
-                            break;
-                        }
-                        if (!playing) {
-                            game.deletePlayer(username);
-                            loggedIn = false;
-                        }
-                        break;
                     case QUIT:
                         outMgr.println("Exitting the game...");
                         game.deletePlayer(username);
