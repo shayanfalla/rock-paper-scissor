@@ -1,5 +1,8 @@
 package client.view;
 
+/*
+Synchronized printing functions for safety precautions.
+ */
 public class ThreadSafeStdOut {
 
     synchronized void print(String output) {

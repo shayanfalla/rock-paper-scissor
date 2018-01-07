@@ -13,6 +13,9 @@ public class GameInterpreter implements Runnable {
     private String username;
     private final ThreadSafeStdOut outMgr = new ThreadSafeStdOut();
 
+    /*
+    Starts the user interface.
+     */
     public void start(Game gm) {
         this.game = gm;
         if (loggedIn) {
@@ -23,10 +26,13 @@ public class GameInterpreter implements Runnable {
         new Thread(this).start();
     }
 
+    /*
+    Main method that runs endlessly until exited manually by command.
+     */
     @Override
     public void run() {
         outMgr.println("~~Welcome to the Game~~");
-        boolean playing = false;
+        boolean playing;
         while (true) {
             try {
                 outMgr.println("");
@@ -100,6 +106,10 @@ public class GameInterpreter implements Runnable {
         return input.nextLine();
     }
 
+    /*
+    Inner object that is then passed on as a parameter such that the server can 
+    communicate with the client.
+     */
     private class NotificationHandler extends UnicastRemoteObject implements ClientObject {
 
         public NotificationHandler() throws RemoteException {

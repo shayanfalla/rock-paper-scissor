@@ -10,6 +10,9 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 import server.model.Player;
 
+/*
+This class handles all the database queries thus called Data Access Object (DAO)
+ */
 public class PlayerDAO {
 
     private final EntityManagerFactory emFactory;
@@ -19,6 +22,9 @@ public class PlayerDAO {
         emFactory = Persistence.createEntityManagerFactory("projectPU");
     }
 
+    /*
+    Registers the client in the database
+     */
     public void registerClient(Player player) {
         try {
             EntityManager entityManager = beginTransaction();
@@ -28,12 +34,18 @@ public class PlayerDAO {
         }
     }
 
+    /*
+    Deletes the player from the database
+     */
     public void deletePlayer(Player player) {
         EntityManager entityManager = beginTransaction();
         entityManager.remove(entityManager.merge(player));
         commitTransaction();
     }
 
+    /*
+    Finds a specific player in the database
+    */
     public Player findPlayer(String username) {
         try {
             EntityManager em = beginTransaction();
@@ -50,6 +62,9 @@ public class PlayerDAO {
 
     }
 
+    /*
+    Returns a list of all current players
+    */
     public List<Player> listPlayers() {
 
         EntityManager em = beginTransaction();
@@ -66,12 +81,18 @@ public class PlayerDAO {
         return players;
     }
 
+    /*
+    Updates players information
+    */
     public void updateInfo(Player player) {
         EntityManager entityManager = beginTransaction();
         entityManager.merge(player);
         commitTransaction();
     }
 
+    /*
+    Dataccess methods
+    */
     private EntityManager beginTransaction() {
         EntityManager em = emFactory.createEntityManager();
         threadLocalEntityManager.set(em);

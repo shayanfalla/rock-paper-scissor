@@ -8,7 +8,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import common.ClientObject;
 
-
+/*
+Entity class that is stored in the database
+Each client has one entity class stored
+*/
 @Entity(name = "Player")
 public class Player implements Serializable {
     

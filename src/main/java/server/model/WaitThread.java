@@ -3,6 +3,10 @@ package server.model;
 import static java.lang.Thread.sleep;
 import server.controller.Controller;
 
+/*
+   This thread simply broadcasts the message that the client needs to wait for more
+   players
+*/
 public class WaitThread extends Thread {
 
     Controller controller;

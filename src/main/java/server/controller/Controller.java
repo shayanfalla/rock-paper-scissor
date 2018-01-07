@@ -23,15 +23,24 @@ public class Controller extends UnicastRemoteObject implements Game {
         this.nrofplayers = 0;
     }
 
+    /*
+    Initializes the gamesession
+     */
     public void initGame() throws InterruptedException, RemoteException {
         gamesession = new GameSession(this);
         gamesession.start();
     }
 
+    /*
+    Return the number of players waiting to play or currently playing
+     */
     public int getNrofplayers() {
         return nrofplayers;
     }
 
+    /*
+    Broadcasts a message to all players
+     */
     public void broadmsg(String msg) {
         Players.forEach((p) -> {
             try {
@@ -41,10 +50,16 @@ public class Controller extends UnicastRemoteObject implements Game {
         });
     }
 
+    /*
+    Returns the player list from the database
+     */
     public List<Player> getPlayers() {
         return Players = playerDAO.listPlayers();
     }
 
+    /*
+    Updates the score of all players
+     */
     public void updateInfo(List<Player> players) throws RemoteException {
         for (Player p : players) {
             p.setMove("");
@@ -53,6 +68,9 @@ public class Controller extends UnicastRemoteObject implements Game {
         }
     }
 
+    /*
+    Sets the clients username
+     */
     @Override
     public void pickUsername(String username, ClientObject client) throws RemoteException {
         if (playerDAO.findPlayer(username) == null) {
@@ -62,6 +80,9 @@ public class Controller extends UnicastRemoteObject implements Game {
         }
     }
 
+    /*
+    Deletes the client when the clientside has exited
+     */
     @Override
     public void deletePlayer(String username) throws RemoteException {
         Player player = playerDAO.findPlayer(username);
@@ -80,17 +101,26 @@ public class Controller extends UnicastRemoteObject implements Game {
         }
     }
 
+    /*
+    Passes on the move that the client made to the game session
+    */
     @Override
     public void sendMove(String msg, String username) throws RemoteException {
         gamesession.playerMove(msg, username);
     }
 
+    /*
+    Used when the client enters PLAY, tells the server that the client is ready
+    */
     @Override
     public void playGame() throws RemoteException {
         getPlayers();
         nrofplayers++;
     }
 
+    /*
+    Used when the client exits. Could be combined with deletePlayer
+    */
     @Override
     public void leaveGame() throws RemoteException {
         nrofplayers--;
@@ -99,6 +129,9 @@ public class Controller extends UnicastRemoteObject implements Game {
         }
     }
 
+    /*
+    This determines if a session is ongoing if a client joins midsession.
+    */
     @Override
     public boolean gameInSession() throws RemoteException {
         return gamesession.gameInSession();

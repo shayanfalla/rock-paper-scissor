@@ -5,10 +5,12 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import server.controller.Controller;
 
+/*
+   The server is started here by initializing the database
+   and registering the server in a registry.
+*/
 public class Server {
 
     public static void main(String[] args) {

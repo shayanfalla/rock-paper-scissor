@@ -7,11 +7,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.controller.Controller;
 
-public class GameSession extends Thread{
+/*
+The core of the server.
+This is where the game is run.
+ */
+public class GameSession extends Thread {
 
     Controller controller;
     public WaitThread wt;
     private boolean count;
+    private boolean game;
     private int answers;
     List<Player> listPlayers;
 
@@ -23,6 +28,9 @@ public class GameSession extends Thread{
         this.listPlayers = controller.getPlayers();
     }
 
+    /*
+    Returns the player object of the specific username (client)
+     */
     public Player getPlayer(String username) {
         if (count) {
             for (Player player : listPlayers) {
@@ -34,6 +42,9 @@ public class GameSession extends Thread{
         return null;
     }
 
+    /*
+    Sets the move that the client made
+     */
     public Player setPlayer(String username, String move) {
         if (count) {
             for (int i = 0; i < listPlayers.size(); i++) {
@@ -47,6 +58,10 @@ public class GameSession extends Thread{
         return null;
     }
 
+    /*
+    Checks if the player has already made their move. 
+    If not(and it is valid), the move is registered
+     */
     public void playerMove(String msg, String username) throws RemoteException {
         Player player = getPlayer(username);
         if (count) {
@@ -60,33 +75,40 @@ public class GameSession extends Thread{
         }
     }
 
+    /*
+    Returns the current state of the game
+    Either ongoing or waiting
+     */
     public boolean gameInSession() {
         return count;
     }
-    
-    private boolean game;
-    public void terminate(){
+
+    /*
+    Terminates the game session if a client exits
+    */
+    public void terminate() {
         game = false;
         wt.terminate();
     }
-    
+
+    /*
+    Runs endlessly until a client exits
+    The inner loop starts as soon as there are two clients
+    Clients who then join afterwards has to wait until the round has ended
+    */
     @Override
-    public void run(){
+    public void run() {
         game = true;
         int gamecounter = 1;
         wt.start();
         while (game) {
             try {
-                /*if(controller.getNrofplayers() > 0){
-                controller.broadmsg("Waiting for " + (3 - controller.getNrofplayers()) + " players");
-                }*/
                 sleep(200);
             } catch (InterruptedException ex) {
-                Logger.getLogger(GameSession.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             while (game && controller.getNrofplayers() >= 2) {
-                
+
                 if (!count) {
                     wt.terminate();
                     listPlayers = controller.getPlayers();

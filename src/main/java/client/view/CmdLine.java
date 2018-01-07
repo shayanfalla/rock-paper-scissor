@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 class CmdLine {
 
+    /*
+    Mostly unused but returns the commands from Command.java
+    */
     private static final String PARAM_DELIMETER = " ";
     private Command cmd;
     private final String enteredLine;

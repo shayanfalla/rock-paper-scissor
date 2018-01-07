@@ -9,6 +9,10 @@ import java.rmi.RemoteException;
 
 public class Main {
 
+    /*
+    Acquires the remote object from the server and then starts communicating. 
+    Exception is thrown if not possible 
+    */
     public static void main(String[] args) {
         try {
             Game game = (Game) Naming.lookup(Game.SERVER_NAME_IN_REGISTRY);
