@@ -10,7 +10,6 @@ public class GameInterpreter implements Runnable {
     private static final String PROMPT = "> ";
     private final Scanner input = new Scanner(System.in);
     private Game game;
-    private PlayerDTO player = null;
     private boolean loggedIn = false;
     private String username;
     private String move;
@@ -104,7 +103,7 @@ public class GameInterpreter implements Runnable {
         return input.nextLine();
     }
 
-    private class NotificationHandler extends UnicastRemoteObject implements MessageToPlayers {
+    private class NotificationHandler extends UnicastRemoteObject implements ClientObject {
 
         public NotificationHandler() throws RemoteException {
         }

@@ -8,14 +8,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.integration.PlayerDAO;
 import server.model.Player;
-import server.model.sessionGame;
+import server.model.GameSession;
 
 public class Controller extends UnicastRemoteObject implements Game {
 
     private final PlayerDAO playerDAO;
     private List<Player> Players;
     private int nrofplayers;
-    private sessionGame gamesession;
+    private GameSession gamesession;
 
     public Controller() throws RemoteException {
         super();
@@ -24,7 +24,7 @@ public class Controller extends UnicastRemoteObject implements Game {
     }
 
     public void initGame() throws InterruptedException, RemoteException {
-        gamesession = new sessionGame(this);
+        gamesession = new GameSession(this);
         gamesession.start();
     }
 
@@ -54,21 +54,11 @@ public class Controller extends UnicastRemoteObject implements Game {
     }
 
     @Override
-    public void pickUsername(String username, MessageToPlayers client) throws RemoteException {
+    public void pickUsername(String username, ClientObject client) throws RemoteException {
         if (playerDAO.findPlayer(username) == null) {
             playerDAO.registerClient(new Player(username, client));
         } else {
             throw new RemoteException("Username '" + username + "' is in use. Pick a new username.");
-        }
-    }
-
-    @Override
-    public PlayerDTO login(String username) throws RemoteException {
-        Player player = playerDAO.findPlayer(username);
-        if (player != null) {
-            return player;
-        } else {
-            throw new RemoteException("Invalid username. Please, try again.");
         }
     }
 

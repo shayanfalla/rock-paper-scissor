@@ -7,7 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.controller.Controller;
 
-public class sessionGame extends Thread{
+public class GameSession extends Thread{
 
     Controller controller;
     public WaitThread wt;
@@ -15,7 +15,7 @@ public class sessionGame extends Thread{
     private int answers;
     List<Player> listPlayers;
 
-    public sessionGame(Controller controller) {
+    public GameSession(Controller controller) {
         this.controller = controller;
         this.wt = new WaitThread(controller);
         this.count = false;
@@ -82,7 +82,7 @@ public class sessionGame extends Thread{
                 }*/
                 sleep(200);
             } catch (InterruptedException ex) {
-                Logger.getLogger(sessionGame.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(GameSession.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             while (game && controller.getNrofplayers() >= 2) {
@@ -100,7 +100,7 @@ public class sessionGame extends Thread{
                         try {
                             sleep(200);
                         } catch (InterruptedException ex) {
-                            Logger.getLogger(sessionGame.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(GameSession.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                     gamecounter++;
@@ -108,7 +108,7 @@ public class sessionGame extends Thread{
                     try {
                         new GameLogic().game(listPlayers);
                     } catch (RemoteException ex) {
-                        Logger.getLogger(sessionGame.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(GameSession.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     count = false;
                 }

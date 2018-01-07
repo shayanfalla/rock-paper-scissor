@@ -1,17 +1,16 @@
 package server.model;
 
-import common.MessageToPlayers;
-import common.PlayerDTO;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import common.ClientObject;
 
 
 @Entity(name = "Player")
-public class Player implements PlayerDTO, Serializable {
+public class Player implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,7 +23,7 @@ public class Player implements PlayerDTO, Serializable {
     private int score;
     
     @Column(nullable = false)
-    private MessageToPlayers playerObj;
+    private ClientObject playerObj;
     
     @Column(nullable = false)
     private String move;
@@ -32,7 +31,7 @@ public class Player implements PlayerDTO, Serializable {
     public Player() {
     }
     
-    public Player(String username, MessageToPlayers playerObj) {
+    public Player(String username, ClientObject playerObj) {
         this.username = username;
         this.playerObj = playerObj;
         this.move = "";
@@ -45,11 +44,11 @@ public class Player implements PlayerDTO, Serializable {
     public String getMove(){
         return this.move;
     }
-    public void setPlayerObj(MessageToPlayers playerObj){
+    public void setPlayerObj(ClientObject playerObj){
         this.playerObj = playerObj;
     }
     
-    public MessageToPlayers getPlayerObj(){
+    public ClientObject getPlayerObj(){
         return this.playerObj;
     }
     
