@@ -7,12 +7,10 @@ import java.util.Scanner;
 
 public class GameInterpreter implements Runnable {
 
-    private static final String PROMPT = "> ";
     private final Scanner input = new Scanner(System.in);
     private Game game;
     private boolean loggedIn = false;
     private String username;
-    private String move;
     private final ThreadSafeStdOut outMgr = new ThreadSafeStdOut();
 
     public void start(Game gm) {
@@ -40,6 +38,7 @@ public class GameInterpreter implements Runnable {
                         outMgr.println("~~The commands are~~");
                         for (Command command : Command.values()) {
                             if (command == Command.ILLEGAL_COMMAND) {
+                                outMgr.println("~~When playing~~\n" + "quit");
                                 continue;
                             }
                             outMgr.println(command.toString().toLowerCase());
@@ -56,22 +55,22 @@ public class GameInterpreter implements Runnable {
                             while (game.gameInSession()) {
                             }
                         }
-                        outMgr.println("Enter a move or 'stop' to finish the game!");
+                        outMgr.println("Enter a move or 'exit' to finish the game!");
                         game.playGame();
                         while (playing) {
                             try {
-                                move = readNextLine().toUpperCase();
-                                switch (move) {
-                                    case "SCISSOR":
+                                cmdLine = new CmdLine(readNextLine());
+                                switch (cmdLine.getCmd()) {
+                                    case SCISSOR:
                                         game.sendMove("SCISSOR", username);
                                         break;
-                                    case "ROCK":
+                                    case ROCK:
                                         game.sendMove("ROCK", username);
                                         break;
-                                    case "PAPER":
+                                    case PAPER:
                                         game.sendMove("PAPER", username);
                                         break;
-                                    case "STOP":
+                                    case QUIT:
                                         game.leaveGame();
                                         game.deletePlayer(username);
                                         System.exit(0);
@@ -85,8 +84,6 @@ public class GameInterpreter implements Runnable {
                         }
                     case QUIT:
                         outMgr.println("Exitting the game...");
-                        game.deletePlayer(username);
-                        loggedIn = false;
                         System.exit(0);
                     default:
                         System.out.println("Invalid command! Try again!");

@@ -1,8 +1,11 @@
 package client.view;
 
-public enum Command {   
+public enum Command {
     PLAY,
     HELP,
+    QUIT,
     ILLEGAL_COMMAND,
-    QUIT
+    SCISSOR,
+    ROCK,
+    PAPER
 }
