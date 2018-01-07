@@ -1,19 +1,18 @@
 package server.model;
 
 import static java.lang.Thread.sleep;
-import server.controller.Controller;
 
 /*
    This thread simply broadcasts the message that the client needs to wait for more
    players
-*/
+ */
 public class WaitThread extends Thread {
 
-    Controller controller;
+    GameSession gamesession;
     private boolean running = true;
 
-    public WaitThread(Controller controller) {
-        this.controller = controller;
+    public WaitThread(GameSession controller) {
+        this.gamesession = controller;
     }
 
     public void terminate() {
@@ -23,8 +22,8 @@ public class WaitThread extends Thread {
     @Override
     public void run() {
         while (running) {
-            if (controller.getNrofplayers() > 0) {
-                controller.broadmsg("Waiting for " + (2 - controller.getNrofplayers()) + " players");
+            if (gamesession.getNrofplayers() > 0) {
+                gamesession.broadmsg("Waiting for " + (2 - gamesession.getNrofplayers()) + " players");
             }
             try {
                 sleep(3000);

@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import server.controller.Controller;
+import server.integration.PlayerDAO;
 
 /*
 The core of the server.
@@ -13,26 +13,62 @@ This is where the game is run.
  */
 public class GameSession extends Thread {
 
-    Controller controller;
-    public WaitThread wt;
-    private boolean count;
-    private boolean game;
+    private final PlayerDAO playerDAO;
+    private WaitThread wt;
+    private boolean isSessiongoing;
+    private boolean gameRunning;
     private int answers;
-    List<Player> listPlayers;
+    private int NrOfPlayers;
+    private List<Player> listPlayers;
 
-    public GameSession(Controller controller) {
-        this.controller = controller;
-        this.wt = new WaitThread(controller);
-        this.count = false;
+    public GameSession(PlayerDAO playerDAO) {
+        this.playerDAO = playerDAO;
+        this.wt = new WaitThread(this);
+        this.isSessiongoing = false;
         this.answers = 0;
-        this.listPlayers = controller.getPlayers();
+        this.NrOfPlayers = 0;
+        getPlayers();
+    }
+
+    /*
+    Return the number of players waiting to play or currently playing
+     */
+    public int getNrofplayers() {
+        return NrOfPlayers;
+    }
+
+    /*
+    Sets
+     */
+    public void setNrOfPlayers(int NrOfPlayers) {
+        this.NrOfPlayers = NrOfPlayers;
+        if (this.NrOfPlayers < 0) {
+            this.NrOfPlayers = 0;
+        }
+    }
+
+    /*
+    Increments
+     */
+    public void incrementNrOfPlayers() {
+        this.NrOfPlayers++;
+    }
+
+    /*
+    Decrements
+     */
+    public void decrementNrOfPlayers() {
+        this.NrOfPlayers--;
+        if (this.NrOfPlayers < 0) {
+            this.NrOfPlayers = 0;
+        }
     }
 
     /*
     Returns the player object of the specific username (client)
      */
     public Player getPlayer(String username) {
-        if (count) {
+        if (isSessiongoing) {
             for (Player player : listPlayers) {
                 if (player.getUsername().equals(username)) {
                     return player;
@@ -46,12 +82,12 @@ public class GameSession extends Thread {
     Sets the move that the client made
      */
     public Player setPlayer(String username, String move) {
-        if (count) {
+        if (isSessiongoing) {
             for (int i = 0; i < listPlayers.size(); i++) {
                 if (listPlayers.get(i).getUsername().equals(username)) {
                     listPlayers.get(i).setMove(move);
                     answers++;
-                    controller.broadmsg(username + " has made their move!");
+                    broadmsg(username + " has made their move!");
                 }
             }
         }
@@ -64,7 +100,7 @@ public class GameSession extends Thread {
      */
     public void playerMove(String msg, String username) throws RemoteException {
         Player player = getPlayer(username);
-        if (count) {
+        if (isSessiongoing) {
             if (player.getMove().equals("")) {
                 setPlayer(username, msg);
             } else {
@@ -80,14 +116,14 @@ public class GameSession extends Thread {
     Either ongoing or waiting
      */
     public boolean gameInSession() {
-        return count;
+        return isSessiongoing;
     }
 
     /*
     Terminates the game session if a client exits
-    */
+     */
     public void terminate() {
-        game = false;
+        gameRunning = false;
         wt.terminate();
     }
 
@@ -95,30 +131,30 @@ public class GameSession extends Thread {
     Runs endlessly until a client exits
     The inner loop starts as soon as there are two clients
     Clients who then join afterwards has to wait until the round has ended
-    */
+     */
     @Override
     public void run() {
-        game = true;
+        gameRunning = true;
         int gamecounter = 1;
         wt.start();
-        while (game) {
+        while (gameRunning) {
             try {
                 sleep(200);
             } catch (InterruptedException ex) {
             }
 
-            while (game && controller.getNrofplayers() >= 2) {
+            while (gameRunning && getNrofplayers() >= 2) {
 
-                if (!count) {
+                if (!isSessiongoing) {
                     wt.terminate();
-                    listPlayers = controller.getPlayers();
-                    count = true;
+                    getPlayers();
+                    isSessiongoing = true;
                 }
-                if (count) {
+                if (isSessiongoing) {
                     //all players give their moves
-                    controller.broadmsg("Round " + gamecounter);
-                    controller.broadmsg("Players! Enter your guesses");
-                    while (answers < controller.getNrofplayers()) {
+                    broadmsg("Round " + gamecounter);
+                    broadmsg("Players! Enter your guesses");
+                    while (answers < getNrofplayers()) {
                         try {
                             sleep(200);
                         } catch (InterruptedException ex) {
@@ -132,9 +168,28 @@ public class GameSession extends Thread {
                     } catch (RemoteException ex) {
                         Logger.getLogger(GameSession.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    count = false;
+                    isSessiongoing = false;
                 }
             }
         }
+    }
+
+    /*
+    Returns the player list from the database
+     */
+    public final void getPlayers() {
+        this.listPlayers = playerDAO.listPlayers();
+    }
+
+    /*
+    Broadcasts a message to all players
+     */
+    public void broadmsg(String msg) {
+        listPlayers.forEach((p) -> {
+            try {
+                p.getPlayerObj().recvMsg(msg);
+            } catch (RemoteException ex) {
+            }
+        });
     }
 }

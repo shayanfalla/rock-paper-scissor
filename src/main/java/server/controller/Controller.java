@@ -14,28 +14,20 @@ public class Controller extends UnicastRemoteObject implements Game {
 
     private final PlayerDAO playerDAO;
     private List<Player> Players;
-    private int nrofplayers;
     private GameSession gamesession;
+    private int tempNrOfPlayers;
 
     public Controller() throws RemoteException {
         super();
         this.playerDAO = new PlayerDAO();
-        this.nrofplayers = 0;
     }
 
     /*
     Initializes the gamesession
      */
     public void initGame() throws InterruptedException, RemoteException {
-        gamesession = new GameSession(this);
+        gamesession = new GameSession(playerDAO);
         gamesession.start();
-    }
-
-    /*
-    Return the number of players waiting to play or currently playing
-     */
-    public int getNrofplayers() {
-        return nrofplayers;
     }
 
     /*
@@ -54,18 +46,8 @@ public class Controller extends UnicastRemoteObject implements Game {
     Returns the player list from the database
      */
     public List<Player> getPlayers() {
+        gamesession.getPlayers();
         return Players = playerDAO.listPlayers();
-    }
-
-    /*
-    Updates the score of all players
-     */
-    public void updateInfo(List<Player> players) throws RemoteException {
-        for (Player p : players) {
-            p.setMove("");
-            playerDAO.updateInfo(p);
-            p.getPlayerObj().recvMsg("Your total score is: " + p.getScore());
-        }
     }
 
     /*
@@ -89,6 +71,7 @@ public class Controller extends UnicastRemoteObject implements Game {
         if (player != null) {
             playerDAO.deletePlayer(player);
             broadmsg(username + " has left the game. Restarting!");
+            this.tempNrOfPlayers = gamesession.getNrofplayers();
             gamesession.terminate();
             try {
                 initGame();
@@ -96,6 +79,7 @@ public class Controller extends UnicastRemoteObject implements Game {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
             getPlayers();
+            gamesession.setNrOfPlayers(tempNrOfPlayers);
         } else {
             throw new RemoteException(username + " does not exist.");
         }
@@ -103,7 +87,7 @@ public class Controller extends UnicastRemoteObject implements Game {
 
     /*
     Passes on the move that the client made to the game session
-    */
+     */
     @Override
     public void sendMove(String msg, String username) throws RemoteException {
         gamesession.playerMove(msg, username);
@@ -111,27 +95,24 @@ public class Controller extends UnicastRemoteObject implements Game {
 
     /*
     Used when the client enters PLAY, tells the server that the client is ready
-    */
+     */
     @Override
     public void playGame() throws RemoteException {
         getPlayers();
-        nrofplayers++;
+        gamesession.incrementNrOfPlayers();
     }
 
     /*
     Used when the client exits. Could be combined with deletePlayer
-    */
+     */
     @Override
     public void leaveGame() throws RemoteException {
-        nrofplayers--;
-        if (nrofplayers < 0) {
-            nrofplayers = 0;
-        }
+        gamesession.decrementNrOfPlayers();
     }
 
     /*
     This determines if a session is ongoing if a client joins midsession.
-    */
+     */
     @Override
     public boolean gameInSession() throws RemoteException {
         return gamesession.gameInSession();

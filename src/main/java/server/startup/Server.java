@@ -10,7 +10,7 @@ import server.controller.Controller;
 /*
    The server is started here by initializing the database
    and registering the server in a registry.
-*/
+ */
 public class Server {
 
     public static void main(String[] args) {

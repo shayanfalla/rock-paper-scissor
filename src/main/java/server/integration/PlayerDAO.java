@@ -45,7 +45,7 @@ public class PlayerDAO {
 
     /*
     Finds a specific player in the database
-    */
+     */
     public Player findPlayer(String username) {
         try {
             EntityManager em = beginTransaction();
@@ -64,7 +64,7 @@ public class PlayerDAO {
 
     /*
     Returns a list of all current players
-    */
+     */
     public List<Player> listPlayers() {
 
         EntityManager em = beginTransaction();
@@ -83,7 +83,7 @@ public class PlayerDAO {
 
     /*
     Updates players information
-    */
+     */
     public void updateInfo(Player player) {
         EntityManager entityManager = beginTransaction();
         entityManager.merge(player);
@@ -92,7 +92,7 @@ public class PlayerDAO {
 
     /*
     Dataccess methods
-    */
+     */
     private EntityManager beginTransaction() {
         EntityManager em = emFactory.createEntityManager();
         threadLocalEntityManager.set(em);

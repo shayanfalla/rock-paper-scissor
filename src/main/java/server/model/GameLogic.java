@@ -2,10 +2,15 @@ package server.model;
 
 import java.rmi.RemoteException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import server.controller.Controller;
+import server.integration.PlayerDAO;
 
+
+
+/*
+This is the logic of the Rock Paper Scissor game. 
+In the end, it informs the user of their current and total score
+then updates their score in the database.
+ */
 public class GameLogic {
 
     public void game(List<Player> players) throws RemoteException {
@@ -34,6 +39,17 @@ public class GameLogic {
             p1.getPlayerObj().recvMsg("Round has ended!\n------------------------");
             p1.getPlayerObj().recvMsg("Your score for this round was: " + roundscore);
         }
-        new Controller().updateInfo(players);
+        updateInfo(players);
+    }
+
+    /*
+    Updates the score of all players
+     */
+    private void updateInfo(List<Player> players) throws RemoteException {
+        for (Player p : players) {
+            p.setMove("");
+            new PlayerDAO().updateInfo(p);
+            p.getPlayerObj().recvMsg("Your total score is: " + p.getScore());
+        }
     }
 }
