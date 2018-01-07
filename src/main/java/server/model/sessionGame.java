@@ -3,12 +3,14 @@ package server.model;
 import static java.lang.Thread.sleep;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import server.controller.Controller;
 
-public class sessionGame {
+public class sessionGame extends Thread{
 
     Controller controller;
-    WaitThread wt;
+    public WaitThread wt;
     private boolean count;
     private int answers;
     List<Player> listPlayers;
@@ -25,7 +27,6 @@ public class sessionGame {
         if (count) {
             for (Player player : listPlayers) {
                 if (player.getUsername().equals(username)) {
-                    System.out.println("found player! Player is: " + player.getUsername());
                     return player;
                 }
             }
@@ -37,10 +38,9 @@ public class sessionGame {
         if (count) {
             for (int i = 0; i < listPlayers.size(); i++) {
                 if (listPlayers.get(i).getUsername().equals(username)) {
-                    System.out.println("Setting move! Move is: " + move);
                     listPlayers.get(i).setMove(move);
-                    System.out.println(listPlayers.get(i).getMove());
                     answers++;
+                    controller.broadmsg(username + " has made their move!");
                 }
             }
         }
@@ -51,7 +51,6 @@ public class sessionGame {
         Player player = getPlayer(username);
         if (count) {
             if (player.getMove().equals("")) {
-                System.out.println("Setting move! Inside playerMove, move is " + msg);
                 setPlayer(username, msg);
             } else {
                 player.getPlayerObj().recvMsg("You have already answered!");
@@ -65,16 +64,28 @@ public class sessionGame {
         return count;
     }
     
-    public void Gamesession() throws InterruptedException, RemoteException {
+    private boolean game;
+    public void terminate(){
+        game = false;
+        wt.terminate();
+    }
+    
+    @Override
+    public void run(){
+        game = true;
         int gamecounter = 1;
         wt.start();
-        while (true) {
-            /*if(controller.getNrofplayers() > 0){
-            controller.broadmsg("Waiting for " + (3 - controller.getNrofplayers()) + " players");
-            }*/
-            sleep(200);
+        while (game) {
+            try {
+                /*if(controller.getNrofplayers() > 0){
+                controller.broadmsg("Waiting for " + (3 - controller.getNrofplayers()) + " players");
+                }*/
+                sleep(200);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(sessionGame.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
-            while (controller.getNrofplayers() >= 2) {
+            while (game && controller.getNrofplayers() >= 2) {
                 
                 if (!count) {
                     wt.terminate();
@@ -86,11 +97,19 @@ public class sessionGame {
                     controller.broadmsg("Round " + gamecounter);
                     controller.broadmsg("Players! Enter your guesses");
                     while (answers < controller.getNrofplayers()) {
-                        sleep(200);
+                        try {
+                            sleep(200);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(sessionGame.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                     gamecounter++;
                     answers = 0;
-                    new GameLogic().game(listPlayers);
+                    try {
+                        new GameLogic().game(listPlayers);
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(sessionGame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     count = false;
                 }
             }

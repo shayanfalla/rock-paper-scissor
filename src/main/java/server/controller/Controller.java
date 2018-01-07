@@ -25,7 +25,7 @@ public class Controller extends UnicastRemoteObject implements Game {
 
     public void initGame() throws InterruptedException, RemoteException {
         gamesession = new sessionGame(this);
-        gamesession.Gamesession();
+        gamesession.start();
     }
 
     public int getNrofplayers() {
@@ -77,6 +77,13 @@ public class Controller extends UnicastRemoteObject implements Game {
         Player player = playerDAO.findPlayer(username);
         if (player != null) {
             playerDAO.deletePlayer(player);
+            broadmsg(username + " has left the game. Restarting!");
+            gamesession.terminate();
+            try {
+                initGame();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
             getPlayers();
         } else {
             throw new RemoteException(username + " does not exist.");

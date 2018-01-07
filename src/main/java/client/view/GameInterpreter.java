@@ -57,7 +57,7 @@ public class GameInterpreter implements Runnable {
                             while (game.gameInSession()) {
                             }
                         }
-                        outMgr.println("Enter a move or choose 'stop' to finish the game!");
+                        outMgr.println("Enter a move or 'stop' to finish the game!");
                         game.playGame();
                         while (playing) {
                             try {

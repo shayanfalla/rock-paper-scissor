@@ -31,6 +31,7 @@ public class GameLogic {
                     }
                 }
             }
+            p1.getPlayerObj().recvMsg("Round has ended!\n------------------------");
             p1.getPlayerObj().recvMsg("Your score for this round was: " + roundscore);
         }
         new Controller().updateInfo(players);
