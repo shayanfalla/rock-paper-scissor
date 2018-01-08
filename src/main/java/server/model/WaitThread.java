@@ -23,7 +23,7 @@ public class WaitThread extends Thread {
     public void run() {
         while (running) {
             if (gamesession.getNrofplayers() > 0) {
-                gamesession.broadmsg("Waiting for " + (2 - gamesession.getNrofplayers()) + " players");
+                gamesession.broadmsg("Waiting for " + (2 - gamesession.getNrofplayers()) + " more player(s)!");
             }
             try {
                 sleep(3000);
